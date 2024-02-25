@@ -1,2 +1,2 @@
-// Ringo-Quiz
+# Ringo-Quiz
 Anime Quiz Game.
