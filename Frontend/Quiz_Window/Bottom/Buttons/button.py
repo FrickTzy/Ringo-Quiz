@@ -4,7 +4,7 @@ from .button_font import ButtonFont
 
 
 class Button:
-    __TEXT_COLOR = Colors.BLACK
+    __TEXT_COLOR = Colors.WHITE
 
     def __init__(self, color, display, index):
         self.__color = color

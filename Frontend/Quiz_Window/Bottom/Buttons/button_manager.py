@@ -3,7 +3,7 @@ from .button import Button
 
 
 class ButtonManager:
-    __BUTTON_COLORS = [Colors.RED, Colors.GREEN, Colors.BLUE, Colors.YELLOW]
+    __BUTTON_COLORS = [Colors.QUIZ_BLUE, Colors.QUIZ_CYAN, Colors.QUIZ_YELLOW, Colors.QUIZ_RED]
     __button_list = []
 
     def __init__(self, display):
