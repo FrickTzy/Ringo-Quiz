@@ -13,7 +13,6 @@ class Display:
         self.__window = self.__set_display()
         self.__check_full_screen()
         self.__set_title()
-        self.__set_logo()
 
     def __set_display(self):
         return display.set_mode((self.__width, self.__height), PYRES if self.__RESIZABLE else None)
@@ -41,6 +40,18 @@ class Display:
     def get_window_size(self):
         return self.__width, self.__height
 
+    @staticmethod
+    def get_mouse_pos():
+        return mouse.get_pos()
+
+    @property
+    def height(self):
+        return self.__height
+
+    @property
+    def width(self):
+        return self.__width
+
     @property
     def center(self) -> tuple[int, int]:
         return self.__width // 2, self.__height // 2
@@ -49,7 +60,7 @@ class Display:
     def center_window_element(width, element_width):
         return width - element_width / 2
 
-    def check_window_size(self) -> bool:
+    def check_if_change_window_size(self) -> bool:
         width, height = self.__window.get_size()
         changed_window_size = width != self.__width or height != self.__height
         if changed_window_size:

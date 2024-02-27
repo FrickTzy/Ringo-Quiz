@@ -1,8 +1,8 @@
 import requests
-from .anime_character_searcher import AnimeCharacterSearcher
+from io import BytesIO
 
 
-class AnimeCharacterImageRetriever:
+class AnimeCharacterImageFetcher:
     def retrieve_image(self, anime_title, character_name):
         if (json_data := self.__retrieve_json(anime_title=anime_title)) is None:
             return None
@@ -12,7 +12,7 @@ class AnimeCharacterImageRetriever:
         filtered_character: dict = self.__filter_characters(character_name=character_name, characters=characters)
         if filtered_character:
             image_url = filtered_character['image']['large']
-            return requests.get(image_url, stream=True)
+            return BytesIO(requests.get(image_url, stream=True).content)
         return None
 
     @staticmethod
@@ -50,8 +50,3 @@ class AnimeCharacterImageRetriever:
 
         except Exception as e:
             return None
-
-
-if __name__ == "__main__":
-    character = AnimeCharacterSearcher().get_random_character(anime_title="bleach")
-    AnimeCharacterImageRetriever().retrieve_image(anime_title="Bleach", character_name=character)

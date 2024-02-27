@@ -1,94 +1,63 @@
-from pygame import draw, Rect, image, transform
-import sys
-from Backend import AnimeCharacterImageRetriever, AnimeCharacterSearcher
-from Frontend.Helper_Files import Display
-from Frontend.Settings import Colors
-from io import BytesIO
-
-
-font = pygame.font.Font(None, 36)
-question_font = pygame.font.Font(None, 48)
-
-# Quiz data
-questions = ["What is the capital of France?",
-             "Who painted the Mona Lisa?",
-             "What is the powerhouse of the cell?"]
-
-answers = [["Paris", "London", "Berlin", "Rome"],
-           ["Leonardo da Vinci", "Pablo Picasso", "Vincent van Gogh", "Michelangelo"],
-           ["Mitochondria", "Nucleus", "Ribosome", "Endoplasmic reticulum"]]
-
-correct_answers = [0, 0, 0]
-
-# Variables
-current_question = 0
-score = 0
-
-# Button properties
-BUTTON_HEIGHT = 100
-BUTTON_MARGIN = 20
-BUTTON_START_Y = SCREEN_HEIGHT // 2
-BUTTON_WIDTH = (SCREEN_WIDTH - 5 * BUTTON_MARGIN) // 4
-
-button_colors = [Colors.RED, Colors.GREEN, Colors.BLUE, Colors.YELLOW]
-
-ANIME_TITLE = "Bleach"
-ANIME_CHARACTER = AnimeCharacterSearcher().get_random_character(anime_title=ANIME_TITLE)
-response = AnimeCharacterImageRetriever().retrieve_image(anime_title=ANIME_TITLE, character_name=ANIME_CHARACTER)
-img = image.load(BytesIO(response.content))
-img = transform.scale(img, (200, 150))
+from pygame import event as pyevent, MOUSEBUTTONDOWN
+from Frontend.Helper_Files import Display, WindowManager
+from Backend import AnswerManager
+from .Bottom import BottomDiv
+from .Top import TopDiv
 
 
 class QuizWindow:
-    __running = True
+    __initialized = False
 
-    def __init__(self, display: Display):
+    def __init__(self, display: Display, window_manager: WindowManager):
         self.__display = display
-
-    def draw_buttons(self):
-        for i, color in enumerate(button_colors):
-            button_rect = Rect((BUTTON_WIDTH + BUTTON_MARGIN) * i + BUTTON_MARGIN, BUTTON_START_Y, BUTTON_WIDTH,
-                               BUTTON_HEIGHT)
-            draw.rect(self.__display.window, color, button_rect)
-            answer_text = font.render(answers[current_question][i], True, Colors.BLACK)
-            answer_rect = answer_text.get_rect(center=button_rect.center)
-            self.__display.window.blit(answer_text, answer_rect)
+        self.__window_manager = window_manager
+        self.__answer_manager = AnswerManager()
+        self.__top_div = TopDiv(display=display, answer_manager=self.__answer_manager)
+        self.__bottom_div = BottomDiv(display=display, answer_manager=self.__answer_manager)
+        self.__event_handler = QuizWindowEventHandler(window_manager=window_manager, bottom_div=self.__bottom_div,
+                                                      top_div=self.__top_div, display=display)
 
     def run(self):
-        while self.__running:
-            self.__display.window.fill(Colors.WHITE)
-            self.__display.window.blit(img, (0, 0))
+        self.__check_if_init()
+        self.__event_handler.check_for_events()
+        self.__top_div.show()
+        self.__bottom_div.show()
 
-            # Event handling
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-                elif event.type == pygame.MOUSEBUTTONDOWN:
-                    mouse_pos = pygame.mouse.get_pos()
-                    for i, color in enumerate(button_colors):
-                        button_rect = pygame.Rect((BUTTON_WIDTH + BUTTON_MARGIN) * i + BUTTON_MARGIN, BUTTON_START_Y, BUTTON_WIDTH, BUTTON_HEIGHT)
-                        if button_rect.collidepoint(mouse_pos):
-                            if i == correct_answers[current_question]:
-                                score += 1
-                            current_question += 1
-                            if current_question == len(questions):
-                                running = False
+    def __check_if_init(self):
+        if self.__initialized:
+            return
+        self.__init()
+        self.__initialized = True
 
-            # Display question
-            if current_question < len(questions):
-                question_text = question_font.render(questions[current_question], True, BLACK)
-                question_rect = question_text.get_rect(center=(SCREEN_WIDTH/2, SCREEN_HEIGHT/4))
-                screen.blit(question_text, question_rect)
+    def __init(self):
+        self.__answer_manager.initialize()
+        self.__top_div.set_image(anime_title=self.__answer_manager.anime_title,
+                                 character_name=self.__answer_manager.chosen_character_name)
+        self.__event_handler.update()
 
-                # Draw buttons
-                draw_buttons()
 
-            # Display score
-            score_text = font.render(f"Score: {score}/{len(questions)}", True, BLACK)
-            score_rect = score_text.get_rect(center=(SCREEN_WIDTH/2, SCREEN_HEIGHT-50))
-            screen.blit(score_text, score_rect)
+class QuizWindowEventHandler:
+    def __init__(self, window_manager: WindowManager, bottom_div: BottomDiv, top_div: TopDiv, display):
+        self.__window_manager = window_manager
+        self.__bottom_div = bottom_div
+        self.__display = display
+        self.__top_div = top_div
 
-            pygame.display.flip()
+    def check_for_events(self):
+        self.__check_if_resize()
+        for event in pyevent.get():
+            self.__window_manager.check_if_quit(event=event)
+            self.__check_if_clicked(event=event)
 
-pygame.quit()
-sys.exit()
+    def __check_if_resize(self):
+        if self.__display.check_if_change_window_size():
+            self.update()
+
+    def __check_if_clicked(self, event):
+        if event.type == MOUSEBUTTONDOWN:
+            self.__bottom_div.check_if_clicked_buttons()
+
+    def update(self):
+        self.__top_div.update()
+        self.__bottom_div.update()
+

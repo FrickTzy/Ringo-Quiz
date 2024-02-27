@@ -1,4 +1,4 @@
-from Backend.anime_character_searcher import get_random_character
+from Backend.anime_character_fetcher import get_random_character
 import requests
 import magic
 from urllib.request import Request, urlopen

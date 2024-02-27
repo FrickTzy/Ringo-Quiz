@@ -4,7 +4,7 @@ import random
 
 class RandomAnimeFetcher:
     __URL = "https://graphql.anilist.co"
-    __MAX_PAGE_SCOPE = 10
+    __MAX_PAGE_SCOPE = 3
 
     def __fetch_anime_data(self):
         page_number = random.randint(1, self.__MAX_PAGE_SCOPE)

@@ -5,3 +5,8 @@ class Colors:
     GREEN = (0, 255, 0)
     BLUE = (0, 0, 255)
     YELLOW = (255, 255, 0)
+    PINK = (201, 160, 220)
+    GRAY_PURPLE = (83, 80, 85)
+    DARK_PURPLE = (62, 5, 89)
+    QUIZ_DARK_PURPLE = (71, 26, 66)
+    PURPLE = (104, 9, 148)

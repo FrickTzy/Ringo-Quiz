@@ -2,7 +2,7 @@ from requests import post
 from random import shuffle, choice
 
 
-class AnimeCharacterSearcher:
+class AnimeCharacterFetcher:
     __MAX_CHARACTER_RETRIEVED = 4
     __ERROR_MESSAGE = "Error fetching data."
 
@@ -64,5 +64,5 @@ class AnimeCharacterSearcher:
 
 if __name__ == "__main__":
     anime_name = input("Enter the name of an anime: ")
-    random_character = AnimeCharacterSearcher().get_random_character(anime_title=anime_name)
+    random_character = AnimeCharacterFetcher().get_random_character(anime_title=anime_name)
     print("Random character:", random_character)
