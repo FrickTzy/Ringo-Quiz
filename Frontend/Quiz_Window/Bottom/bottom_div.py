@@ -13,6 +13,9 @@ class BottomDiv:
         self.__button_manager.show_buttons(surface=self.__bottom_surface, choices=self.__answer_manager.choices)
         self.__display.window.blit(self.__bottom_surface, (0, 0))
 
+    def __debug(self):
+        print(f"{self.__answer_manager.choices}: {self.__answer_manager.anime_title}")
+
     def check_if_clicked_buttons(self):
         clicked, index = self.__button_manager.check_if_clicked()
         if not clicked:

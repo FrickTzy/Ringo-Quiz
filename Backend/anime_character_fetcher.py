@@ -28,6 +28,8 @@ class AnimeCharacterFetcher:
 
     def get_random_character_for_quiz(self, anime_title) -> (str, list[str]):
         original_character_list = self.__get_list_of_characters(anime_title=anime_title)
+        if not original_character_list:
+            raise Exception("Wasn't able to fetch anime characters.")
         chosen_character_list = []
         for character in original_character_list:
             character_name = self.__get_character_name(character=character)

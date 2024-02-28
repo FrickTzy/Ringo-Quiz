@@ -5,7 +5,13 @@ import random
 class RandomAnimeFetcher:
     __URL = "https://graphql.anilist.co"
     __MAX_PAGE_SCOPE = 3
-    __ANIME_LIST = ["One Piece", "Naruto", "Bleach", "Beelzebub", "Unwanted Undead Adventurer"]
+    __ANIME_LIST = ["One Piece", "Naruto", "Bleach", "Beelzebub", "Unwanted Undead Adventurer", "Dr. Stone",
+                    "Eminence in Shadow", "Beastars", " Code Geass: Lelouch of the Rebellion", "Steins;Gate",
+                    "Frieren", "Edens Zero", "Kimi ni Todoke", "Zom 100: Bucket List of the Dead",
+                    "Hells Paradise", "Mashle", "The Ice Guy and His Cool Female Colleague", "Angel Next Door",
+                    "Kuma Kuma Kuma Bear", "Spy x Family", "Black Clover", "Tensura", "Sakamoto Days", "Chainsaw Man",
+                    "Rising of the Shield Hero", "One Punch Man", "Death Note", "Assassination Classroom",
+                    "Highschool of the Elite", "Violet Evergarden"]
 
     def __fetch_anime_data(self):
         page_number = random.randint(1, self.__MAX_PAGE_SCOPE)

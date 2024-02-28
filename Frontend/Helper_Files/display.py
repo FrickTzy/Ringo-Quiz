@@ -33,7 +33,6 @@ class Display:
         if self.__FULL_SCREEN_VIEW or full_screen:
             self.__width, self.__height = 1600, 900
             self.__window = display.set_mode((self.__width, self.__height), FULLSCREEN)
-            mouse.set_visible(False)
             mouse.set_cursor(cursors.arrow)
 
     @property
