@@ -5,6 +5,7 @@ import random
 class RandomAnimeFetcher:
     __URL = "https://graphql.anilist.co"
     __MAX_PAGE_SCOPE = 3
+    __ANIME_LIST = ["One Piece", "Naruto", "Bleach", "Beelzebub", "Unwanted Undead Adventurer"]
 
     def __fetch_anime_data(self):
         page_number = random.randint(1, self.__MAX_PAGE_SCOPE)
@@ -45,6 +46,9 @@ class RandomAnimeFetcher:
             return random.choice(anime_titles)
         else:
             return None
+
+    def get_random_anime_from_list(self):
+        return random.choice(self.__ANIME_LIST)
 
 
 if __name__ == "__main__":

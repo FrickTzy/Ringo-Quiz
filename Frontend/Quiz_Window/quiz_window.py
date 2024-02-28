@@ -6,16 +6,16 @@ from .Top import TopDiv
 
 
 class QuizWindow:
-    __initialized = False
-
     def __init__(self, display: Display, window_manager: WindowManager):
         self.__display = display
         self.__window_manager = window_manager
+        self.__init_manager = InitManager()
         self.__answer_manager = AnswerManager()
         self.__top_div = TopDiv(display=display, answer_manager=self.__answer_manager)
         self.__bottom_div = BottomDiv(display=display, answer_manager=self.__answer_manager)
         self.__event_handler = QuizWindowEventHandler(window_manager=window_manager, bottom_div=self.__bottom_div,
-                                                      top_div=self.__top_div, display=display)
+                                                      top_div=self.__top_div, display=display,
+                                                      init_manager=self.__init_manager)
 
     def run(self):
         self.__check_if_init()
@@ -24,10 +24,8 @@ class QuizWindow:
         self.__bottom_div.show()
 
     def __check_if_init(self):
-        if self.__initialized:
-            return
-        self.__init()
-        self.__initialized = True
+        if self.__init_manager.check_if_init():
+            self.__init()
 
     def __init(self):
         self.__answer_manager.initialize()
@@ -37,11 +35,12 @@ class QuizWindow:
 
 
 class QuizWindowEventHandler:
-    def __init__(self, window_manager: WindowManager, bottom_div: BottomDiv, top_div: TopDiv, display):
+    def __init__(self, window_manager: WindowManager, bottom_div: BottomDiv, top_div: TopDiv, display, init_manager):
         self.__window_manager = window_manager
         self.__bottom_div = bottom_div
         self.__display = display
         self.__top_div = top_div
+        self.__init_manager = init_manager
 
     def check_for_events(self):
         self.__check_if_resize()
@@ -54,10 +53,31 @@ class QuizWindowEventHandler:
             self.update()
 
     def __check_if_clicked(self, event):
-        if event.type == MOUSEBUTTONDOWN:
-            self.__bottom_div.check_if_clicked_buttons()
+        if not event.type == MOUSEBUTTONDOWN:
+            return
+        if not self.__bottom_div.check_if_clicked_buttons():
+            return
+        self.__init_manager.reset()
 
     def update(self):
         self.__top_div.update()
         self.__bottom_div.update()
+
+
+class InitManager:
+    __initialized = False
+
+    def reset(self):
+        self.__initialized = False
+
+    def set_initialized(self):
+        self.__initialized = True
+
+    def check_if_init(self):
+        if self.__initialized:
+            return False
+        self.__initialized = True
+        return True
+
+
 

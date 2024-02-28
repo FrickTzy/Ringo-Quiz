@@ -16,8 +16,9 @@ class BottomDiv:
     def check_if_clicked_buttons(self):
         clicked, index = self.__button_manager.check_if_clicked()
         if not clicked:
-            return
+            return False
         print(self.__answer_manager.check_if_correct_answer(index=index))
+        return True
 
     def update(self):
         self.__bottom_surface = Surface(self.__display.get_window_size, SRCALPHA)

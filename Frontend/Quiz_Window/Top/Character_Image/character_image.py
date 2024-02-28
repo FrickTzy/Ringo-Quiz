@@ -22,7 +22,7 @@ class CharacterImage:
 
 
 class CharacterImagePos:
-    __X_RATIO, __Y_RATIO = 2, 43
+    __X_RATIO, __Y_RATIO = 2, 39.5
 
     def __init__(self, display):
         self.__display = display
@@ -40,7 +40,7 @@ class CharacterImagePos:
 
 
 class CharacterImageSizeManager:
-    __WIDTH_RATIO, __HEIGHT_RATIO = 2.8, 2.35
+    __WIDTH_RATIO, __HEIGHT_RATIO = 4, 2.30
 
     def __init__(self, display):
         self.__display = display

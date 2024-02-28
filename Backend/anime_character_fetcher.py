@@ -5,14 +5,19 @@ from random import shuffle, choice
 class AnimeCharacterFetcher:
     __MAX_CHARACTER_RETRIEVED = 4
     __ERROR_MESSAGE = "Error fetching data."
+    __character_chosen = []
 
     def get_list_of_random_characters(self, anime_title):
-        anime_characters_json: dict = self.__retrieve_anime_characters_json(anime_title=anime_title)
-        if (list_of_anime_characters := self.__extract_anime_characters(anime_characters_json)) == self.__ERROR_MESSAGE:
-            return self.__ERROR_MESSAGE
-        shuffle(list_of_anime_characters)
+        list_of_anime_characters = self.__get_list_of_characters(anime_title=anime_title)
         return [self.__get_character_name(character=character) for character in
                 list_of_anime_characters[0:self.__MAX_CHARACTER_RETRIEVED]]
+
+    def __get_list_of_characters(self, anime_title):
+        anime_characters_json: dict = self.__retrieve_anime_characters_json(anime_title=anime_title)
+        if (list_of_anime_characters := self.__extract_anime_characters(anime_characters_json)) == self.__ERROR_MESSAGE:
+            return False
+        shuffle(list_of_anime_characters)
+        return list_of_anime_characters
 
     def get_random_character(self, anime_title):
         anime_characters_json: dict = self.__retrieve_anime_characters_json(anime_title=anime_title)
@@ -20,6 +25,23 @@ class AnimeCharacterFetcher:
             return self.__ERROR_MESSAGE
         chosen_character = choice(list_of_anime_characters)
         return self.__get_character_name(character=chosen_character)
+
+    def get_random_character_for_quiz(self, anime_title) -> (str, list[str]):
+        original_character_list = self.__get_list_of_characters(anime_title=anime_title)
+        chosen_character_list = []
+        for character in original_character_list:
+            character_name = self.__get_character_name(character=character)
+            if len(chosen_character_list) == self.__MAX_CHARACTER_RETRIEVED:
+                break
+            if character_name in self.__character_chosen:
+                continue
+            chosen_character_list.append(character_name)
+        return self.__choose_random_character(chosen_character_list), chosen_character_list
+
+    def __choose_random_character(self, character_list):
+        chosen_character = choice(character_list)
+        self.__character_chosen.append(chosen_character)
+        return chosen_character
 
     @staticmethod
     def __get_character_name(character: dict):
