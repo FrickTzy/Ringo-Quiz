@@ -1,0 +1,2 @@
+ON_SFX = True
+SFX_VOLUME = .6

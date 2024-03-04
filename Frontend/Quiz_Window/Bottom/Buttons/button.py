@@ -42,6 +42,25 @@ class Button:
         self.__font.update_font()
 
 
+class ButtonEventHandler:
+    __hovered = False
+
+    def __init__(self, sfx_manager, display):
+        self.__sfx_manager = sfx_manager
+        self.__display = display
+
+    def check_button_events(self, rect):
+        self.__check_if_hover(rect=rect)
+
+    def __check_if_hover(self, rect):
+        if not rect.collidepoint(self.__display.get_mouse_pos()):
+            self.__hovered = False
+            return
+        if not self.__hovered:
+            self.__hovered = True
+            self.__sfx_manager.play_hover_sfx()
+
+
 class ButtonPos:
     __BUTTON_WIDTH_RATIO = 4.12
     __BUTTON_X_MARGIN_RATIO = 150

@@ -2,7 +2,7 @@ import os
 import requests
 import random
 import shutil
-from Backend.anime_character_fetcher import AnimeCharacterSearcher
+from Backend.Functions.Anime_Fetcher.anime_character_fetcher import AnimeCharacterSearcher
 
 
 def download_character_image(anime_name, character_name):

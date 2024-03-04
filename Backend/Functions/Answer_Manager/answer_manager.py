@@ -1,5 +1,5 @@
-from .random_anime_fetcher import RandomAnimeFetcher
-from .anime_character_fetcher import AnimeCharacterFetcher
+from Backend.Functions.Anime_Fetcher.random_anime_fetcher import RandomAnimeFetcher
+from Backend.Functions.Anime_Fetcher.anime_character_fetcher import AnimeCharacterFetcher
 
 
 class AnswerManager:

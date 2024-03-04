@@ -1,4 +1,3 @@
-from .anime_character_fetcher import AnimeCharacterFetcher
-from .anime_character_image_fetcher import AnimeCharacterImageFetcher
-from .random_anime_fetcher import RandomAnimeFetcher
-from .answer_manager import AnswerManager
+from Backend.Functions.Anime_Fetcher.random_anime_fetcher import RandomAnimeFetcher
+from Backend.Functions.Answer_Manager.answer_manager import AnswerManager
+from Backend.Functions import *
