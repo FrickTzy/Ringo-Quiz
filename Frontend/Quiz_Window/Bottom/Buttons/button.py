@@ -6,22 +6,22 @@ from .button_font import ButtonFont
 class Button:
     __TEXT_COLOR = Colors.WHITE
 
-    def __init__(self, color, display, index):
+    def __init__(self, color, display, index, sfx_manager):
         self.__color = color
         self.__index = index
         self.__display = display
         self.__pos = ButtonPos(display=display, index=index)
         self.__font = ButtonFont(display=display, text_color=self.__TEXT_COLOR)
         self.__rect = Rect(self.__pos.button_x, self.__pos.button_y, self.__pos.button_width, self.__pos.button_height)
+        self.__event_handler = ButtonEventHandler(sfx_manager, display=display)
 
     def show_button(self, surface, text):
         draw.rect(surface, self.__color, self.__rect)
         self.__show_text(surface=surface, text=text)
+        self.__event_handler.check_button_events(rect=self.__rect)
 
-    def check_if_clicked(self):
-        if self.__rect.collidepoint(self.__display.get_mouse_pos()):
-            return True
-        return False
+    def check_if_hover(self):
+        return self.__event_handler.check_if_hover(rect=self.__rect)
 
     def __show_text(self, surface, text):
         rendered_text_list = self.__font.render_text(text=text, button_width=self.__pos.button_width)
@@ -50,10 +50,15 @@ class ButtonEventHandler:
         self.__display = display
 
     def check_button_events(self, rect):
-        self.__check_if_hover(rect=rect)
+        self.__check_if_hover_sfx(rect=rect)
 
-    def __check_if_hover(self, rect):
-        if not rect.collidepoint(self.__display.get_mouse_pos()):
+    def check_if_hover(self, rect):
+        if rect.collidepoint(self.__display.get_mouse_pos()):
+            return True
+        return False
+
+    def __check_if_hover_sfx(self, rect):
+        if not self.check_if_hover(rect=rect):
             self.__hovered = False
             return
         if not self.__hovered:

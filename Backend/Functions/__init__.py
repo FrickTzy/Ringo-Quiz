@@ -1,3 +1,3 @@
 from .Anime_Fetcher import *
-from .Timer import *
-from .Anime_Fetcher import *
+from .Answer_Manager import AnswerManager
+from .Music import Music

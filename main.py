@@ -1,4 +1,5 @@
 import pygame
+from Backend.Functions import Music
 from Frontend.Helper_Files import WindowManager, Display
 from Frontend.Quiz_Window import QuizWindow
 from Frontend.Settings import Colors, FPS
@@ -9,10 +10,16 @@ class Main:
     __FILL_COLOR = Colors.QUIZ_DARK_PURPLE
 
     def __init__(self):
-        pygame.init()
+        self.__init_pygame()
         self.__window_manager = WindowManager()
+        self.__music = Music()
         self.__display = Display()
-        self.__quiz_window = QuizWindow(display=self.__display, window_manager=self.__window_manager)
+        self.__quiz_window = QuizWindow(display=self.__display, window_manager=self.__window_manager,
+                                        music=self.__music)
+
+    @staticmethod
+    def __init_pygame():
+        pygame.init()
 
     def run(self):
         while self.__window_manager.is_running:

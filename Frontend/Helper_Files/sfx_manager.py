@@ -1,7 +1,7 @@
 from pygame import mixer
 from os import path
 from Frontend.Settings import SFX_VOLUME, ON_SFX
-from Backend.Functions.Timer.timer import IntervalTimer
+from Backend.Timer import IntervalTimer
 
 
 class SFXManager:
@@ -13,13 +13,13 @@ class SFXManager:
         self.__interval_timer = IntervalTimer(self.__SOUND_INTERVAL)
         self.__sound_manager = SoundManager()
 
-    def play_menu_hit(self):
+    def play_hit_sfx(self):
         self.__play_sfx(sound=self.__sound_manager.menu_hit_sound)
 
-    def play_menu_back(self):
+    def play_back_sfx(self):
         self.__play_sfx(sound=self.__sound_manager.menu_back_sound)
 
-    def play_menu_hover(self):
+    def play_hover_sfx(self):
         self.__play_sfx(sound=self.__sound_manager.menu_hover_sound)
 
     def __play_sfx(self, sound):

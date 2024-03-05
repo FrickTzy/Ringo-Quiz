@@ -1,24 +1,28 @@
 from pygame import event as pyevent, MOUSEBUTTONDOWN
-from Frontend.Helper_Files import Display, WindowManager
+from Frontend.Helper_Files import Display, WindowManager, SFXManager
 from Backend import AnswerManager
 from .Bottom import BottomDiv
 from .Top import TopDiv
 
 
 class QuizWindow:
-    def __init__(self, display: Display, window_manager: WindowManager):
+    def __init__(self, display: Display, window_manager: WindowManager, music):
         self.__display = display
+        self.__music = music
         self.__window_manager = window_manager
         self.__init_manager = InitManager()
         self.__answer_manager = AnswerManager()
         self.__top_div = TopDiv(display=display, answer_manager=self.__answer_manager)
-        self.__bottom_div = BottomDiv(display=display, answer_manager=self.__answer_manager)
+        self.__sfx_manager = SFXManager()
+        self.__bottom_div = BottomDiv(display=display, answer_manager=self.__answer_manager,
+                                      sfx_manager=self.__sfx_manager)
         self.__event_handler = QuizWindowEventHandler(window_manager=window_manager, bottom_div=self.__bottom_div,
                                                       top_div=self.__top_div, display=display,
                                                       init_manager=self.__init_manager)
 
     def run(self):
         self.__check_if_init()
+        self.__music.check_if_song_finished()
         self.__event_handler.check_for_events()
         self.__top_div.show()
         self.__bottom_div.show()

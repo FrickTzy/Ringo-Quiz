@@ -3,10 +3,11 @@ from .Buttons import ButtonManager
 
 
 class BottomDiv:
-    def __init__(self, display, answer_manager):
+    def __init__(self, display, answer_manager, sfx_manager):
         self.__display = display
+        self.__sfx_manager = sfx_manager
         self.__bottom_surface = Surface(display.get_window_size, SRCALPHA)
-        self.__button_manager = ButtonManager(display=display)
+        self.__button_manager = ButtonManager(display=display, sfx_manager=sfx_manager)
         self.__answer_manager = answer_manager
 
     def show(self):
@@ -21,6 +22,7 @@ class BottomDiv:
         if not clicked:
             return False
         print(self.__answer_manager.check_if_correct_answer(index=index))
+        self.__sfx_manager.play_hit_sfx()
         return True
 
     def update(self):
