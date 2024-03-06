@@ -1,6 +1,7 @@
 from pygame import Rect, draw
 from Frontend.Settings import Colors
 from .button_font import ButtonFont
+from .button_animation import ButtonAnimation
 
 
 class Button:
@@ -14,11 +15,17 @@ class Button:
         self.__font = ButtonFont(display=display, text_color=self.__TEXT_COLOR)
         self.__rect = Rect(self.__pos.button_x, self.__pos.button_y, self.__pos.button_width, self.__pos.button_height)
         self.__event_handler = ButtonEventHandler(sfx_manager, display=display)
+        self.__animation_manager = ButtonAnimation(button_pos=self.__pos)
 
-    def show_button(self, surface, text):
-        draw.rect(surface, self.__color, self.__rect)
+    def show_button(self, surface, text, finished_clicking):
+        self.__animation_manager.check_for_animations(in_animation=finished_clicking)
+        self.__draw_rect(surface=surface)
         self.__show_text(surface=surface, text=text)
         self.__event_handler.check_button_events(rect=self.__rect)
+
+    def __draw_rect(self, surface):
+        self.__update_rect()
+        draw.rect(surface, self.__color, self.__rect)
 
     def check_if_hover(self):
         return self.__event_handler.check_if_hover(rect=self.__rect)
@@ -38,8 +45,12 @@ class Button:
             surface.blit(rendered_text, text_rect)
 
     def update_button(self):
-        self.__rect = Rect(self.__pos.button_x, self.__pos.button_y, self.__pos.button_width, self.__pos.button_height)
+        self.__update_rect()
         self.__font.update_font()
+
+    def __update_rect(self):
+        self.__rect.x, self.__rect.y = self.__pos.button_x, self.__pos.button_y
+        self.__rect.width, self.__rect.height = self.__pos.button_width, self.__pos.button_height
 
 
 class ButtonEventHandler:
@@ -76,6 +87,8 @@ class ButtonPos:
     def __init__(self, display, index):
         self.__display = display
         self.__index = index
+        self.__button_height = self.initial_button_height
+        self.__button_y = self.initial_button_y
 
     @property
     def button_width(self):
@@ -87,6 +100,10 @@ class ButtonPos:
 
     @property
     def button_y(self):
+        return self.__button_y
+
+    @property
+    def initial_button_y(self):
         return self.__display.height // self.__BUTTON_Y_RATIO
 
     @property
@@ -94,8 +111,26 @@ class ButtonPos:
         return self.__display.width // self.__BUTTON_X_MARGIN_RATIO
 
     @property
-    def button_height(self):
+    def initial_button_height(self):
         return self.__display.height // self.__BUTTON_HEIGHT_RATIO
+
+    @property
+    def button_height(self):
+        return self.__button_height
+
+    def set_button_y(self, button_y):
+        self.__button_y = button_y
+
+    @property
+    def target_y(self):
+        return self.initial_button_y - self.initial_button_y // 10
+
+    @property
+    def target_height(self):
+        return self.initial_button_height + self.initial_button_y // 10
+
+    def set_button_height(self, button_height):
+        self.__button_height = button_height
 
     def get_text_pos(self, text_size, text_amount, current_index):
         text_width, text_height = text_size

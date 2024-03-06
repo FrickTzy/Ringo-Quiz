@@ -4,12 +4,13 @@ from .Character_Image import CharacterImage
 
 
 class TopDiv:
-    def __init__(self, display, answer_manager):
+    def __init__(self, display, answer_manager, init_manager):
         self.__display = display
         self.__top_surface = Surface(display.get_window_size, SRCALPHA)
         self.__answer_manager = answer_manager
         self.__image_manager = CharacterImage(display=display)
         self.__image_fetcher = AnimeCharacterImageFetcher()
+        self.__init_manager = init_manager
 
     def show(self):
         self.__image_manager.show(surface=self.__top_surface)

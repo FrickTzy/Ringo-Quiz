@@ -10,7 +10,6 @@ class SongChecker:
 
     @classmethod
     def get_all_songs(cls):
-        print(cls.__get_path())
         return glob("*.mp3", root_dir=cls.__get_path())
 
     @classmethod
@@ -49,7 +48,6 @@ class Music:
         random.shuffle(self.__music_list)
 
     def check_if_song_finished(self):
-        self.__target_timer.debug()
         if not self.__target_timer.check_if_finish_timer():
             return
         self.__current_song_index += 1
