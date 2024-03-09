@@ -96,8 +96,8 @@ class RGBAnimationTemplate:
 
     def setup_animation(self, in_animation, target_color_value):
         self.__animation_manager.reset()
-        self.__set_target_color_value(target_color_value=target_color_value)
         if in_animation:
+            self.__set_target_color_value(target_color_value=target_color_value)
             self.__target_manager.setup(current_value=self.__initial_color_value,
                                         target_value=self.__target_color_value)
         else:

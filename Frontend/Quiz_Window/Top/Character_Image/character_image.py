@@ -12,9 +12,9 @@ class CharacterImage:
         self.__size_manager = CharacterImageSizeManager(display=display)
         self.__animation_manager = CharacterImageAnimation(image_pos=self.__image_pos, image_size=self.__size_manager)
 
-    def show(self, surface, finished_clicking):
+    def show(self, surface, finished_clicking, correct_index):
         self.__check_if_loaded_image()
-        self.__animation_manager.check_for_animations(in_animation=finished_clicking)
+        self.__animation_manager.check_for_animations(in_animation=finished_clicking, correct_index=correct_index)
         self.__check_if_update_image()
         surface.blit(self.__used_image, self.__image_pos.get_coord(image_width=self.__size_manager.width))
 
@@ -57,7 +57,7 @@ class CharacterImagePos:
 
 class CharacterImageSizeManager:
     __WIDTH_RATIO, __HEIGHT_RATIO = 4.2, 2.30
-    __REDUCING_RATIO = 22
+    __REDUCING_RATIO = 30
 
     def __init__(self, display):
         self.__display = display

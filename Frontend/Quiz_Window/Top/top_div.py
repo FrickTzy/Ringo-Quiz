@@ -16,7 +16,8 @@ class TopDiv:
     def show(self):
         self.__clear_surface()
         self.__image_manager.show(surface=self.__top_surface,
-                                  finished_clicking=self.__animation_notifier.animation_running)
+                                  finished_clicking=self.__animation_notifier.animation_running,
+                                  correct_index=self.__answer_manager.get_correct_answer_index)
         self.__display.window.blit(self.__top_surface, (0, 0))
 
     def __clear_surface(self):

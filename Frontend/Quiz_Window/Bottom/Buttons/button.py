@@ -134,7 +134,7 @@ class ButtonPos:
 
     @property
     def correct_target_y(self):
-        return self.initial_button_y - self.initial_button_y // 10
+        return self.initial_button_y - self.initial_button_y // 15
 
     @property
     def wrong_target_y(self):

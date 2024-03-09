@@ -7,7 +7,10 @@ class AnimeCharacterImageFetcher:
     def retrieve_image(self, anime_title, character_name):
         if (json_data := self.__retrieve_json(anime_title=anime_title)) is None:
             raise AnimeFetchingError()
-        characters = json_data['data']['Media']['characters']['edges']
+        try:
+            characters = json_data['data']['Media']['characters']['edges']
+        except TypeError:
+            raise AnimeFetchingError()
         if not characters:
             raise AnimeFetchingError()
         filtered_character: dict = self.__filter_characters(character_name=character_name, characters=characters)
