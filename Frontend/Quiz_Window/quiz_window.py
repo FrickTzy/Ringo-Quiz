@@ -1,7 +1,8 @@
 from pygame import event as pyevent, MOUSEBUTTONDOWN
 from threading import Thread
 from Frontend.Helper_Files import Display, WindowManager, SFXManager
-from Backend import AnswerManager
+from Frontend.Quiz_Window.Helper_Files import AnimationNotifier
+from Backend import AnswerManager, AnimeFetchingError
 from .Bottom import BottomDiv
 from .Top import TopDiv
 
@@ -14,18 +15,26 @@ class QuizWindow:
         self.__init_manager = InitManager()
         self.__answer_manager = AnswerManager()
         self.__sfx_manager = SFXManager()
-        self.__top_div = TopDiv(display=display, answer_manager=self.__answer_manager, init_manager=self.__init_manager)
+        self.__animation_notifier = AnimationNotifier()
+        self.__animation_handler = AnimationEventHandler(init_manager=self.__init_manager,
+                                                         animation_notifier=self.__animation_notifier)
+        self.__top_div = TopDiv(display=display, answer_manager=self.__answer_manager, init_manager=self.__init_manager,
+                                animation_notifier=self.__animation_notifier)
         self.__bottom_div = BottomDiv(display=display, answer_manager=self.__answer_manager,
-                                      sfx_manager=self.__sfx_manager, init_manager=self.__init_manager)
+                                      sfx_manager=self.__sfx_manager, animation_notifier=self.__animation_notifier)
         self.__event_handler = QuizWindowEventHandler(window_manager=window_manager, bottom_div=self.__bottom_div,
                                                       top_div=self.__top_div, display=display,
                                                       init_manager=self.__init_manager)
 
     def run(self):
         self.__check_if_init()
-        self.__event_handler.check_for_events()
+        self.__check_for_events()
         self.__music.check_if_song_finished()
         self.__show_div()
+
+    def __check_for_events(self):
+        self.__event_handler.check_for_events()
+        self.__animation_handler.check_for_animations()
 
     def __show_div(self):
         if self.__init_manager.check_if_first_init():
@@ -38,9 +47,14 @@ class QuizWindow:
             Thread(target=self.__init).start()
 
     def __init(self):
-        self.__answer_manager.initialize()
-        self.__top_div.set_image(anime_title=self.__answer_manager.anime_title,
-                                 character_name=self.__answer_manager.chosen_character_name)
+        try:
+            self.__answer_manager.initialize()
+            self.__top_div.set_image(anime_title=self.__answer_manager.anime_title,
+                                     character_name=self.__answer_manager.chosen_character_name)
+        except AnimeFetchingError:
+            print("try again!")
+            self.__init()
+            return
         self.__answer_manager.set_choices()
         self.__event_handler.update()
         self.__init_manager.finish_init()
@@ -65,6 +79,8 @@ class QuizWindowEventHandler:
             self.update()
 
     def __check_if_clicked(self, event):
+        if not self.__init_manager.check_if_finished_init():
+            return
         if not event.type == MOUSEBUTTONDOWN:
             return
         if not self.__bottom_div.check_if_clicked_buttons():
@@ -74,6 +90,23 @@ class QuizWindowEventHandler:
     def update(self):
         self.__top_div.update()
         self.__bottom_div.update()
+
+
+class AnimationEventHandler:
+    __finished_init = False
+
+    def __init__(self, animation_notifier, init_manager):
+        self.__animation_notifier = animation_notifier
+        self.__init_manager = init_manager
+
+    def check_for_animations(self):
+        if (finished_init := self.__init_manager.check_if_finished_init()) == self.__finished_init:
+            return
+        if not finished_init:
+            self.__animation_notifier.start_animation()
+        else:
+            self.__animation_notifier.reset_animation()
+        self.__finished_init = finished_init
 
 
 class InitManager:

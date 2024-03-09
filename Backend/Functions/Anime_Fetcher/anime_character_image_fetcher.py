@@ -1,19 +1,20 @@
 import requests
 from io import BytesIO
+from .fetching_error import AnimeFetchingError
 
 
 class AnimeCharacterImageFetcher:
     def retrieve_image(self, anime_title, character_name):
         if (json_data := self.__retrieve_json(anime_title=anime_title)) is None:
-            return None
+            raise AnimeFetchingError()
         characters = json_data['data']['Media']['characters']['edges']
         if not characters:
-            return None
+            raise AnimeFetchingError()
         filtered_character: dict = self.__filter_characters(character_name=character_name, characters=characters)
         if filtered_character:
             image_url = filtered_character['image']['large']
             return BytesIO(requests.get(image_url, stream=True).content)
-        return None
+        raise AnimeFetchingError()
 
     @staticmethod
     def __filter_characters(character_name, characters):

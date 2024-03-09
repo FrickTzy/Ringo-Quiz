@@ -1,5 +1,6 @@
 from pygame import Rect, draw
 from Frontend.Settings import Colors
+from .button_color_manager import ButtonColorManager
 from .button_font import ButtonFont
 from .button_animation import ButtonAnimation
 
@@ -8,14 +9,17 @@ class Button:
     __TEXT_COLOR = Colors.WHITE
 
     def __init__(self, color, display, index, sfx_manager):
-        self.__color = color
+        self.__color_manager = ButtonColorManager(initial_color=color)
         self.__index = index
         self.__display = display
+        self.__correct_answer_manager = CorrectAnswerManager()
         self.__pos = ButtonPos(display=display, index=index)
         self.__font = ButtonFont(display=display, text_color=self.__TEXT_COLOR)
         self.__rect = Rect(self.__pos.button_x, self.__pos.button_y, self.__pos.button_width, self.__pos.button_height)
         self.__event_handler = ButtonEventHandler(sfx_manager, display=display)
-        self.__animation_manager = ButtonAnimation(button_pos=self.__pos)
+        self.__correct_answer_manager = CorrectAnswerManager()
+        self.__animation_manager = ButtonAnimation(button_pos=self.__pos, color_manager=self.__color_manager,
+                                                   correct_answer_manager=self.__correct_answer_manager)
 
     def show_button(self, surface, text, finished_clicking):
         self.__animation_manager.check_for_animations(in_animation=finished_clicking)
@@ -23,9 +27,12 @@ class Button:
         self.__show_text(surface=surface, text=text)
         self.__event_handler.check_button_events(rect=self.__rect)
 
+    def set_if_correct_answer(self, is_correct_answer):
+        self.__correct_answer_manager.is_correct_answer = is_correct_answer
+
     def __draw_rect(self, surface):
         self.__update_rect()
-        draw.rect(surface, self.__color, self.__rect)
+        draw.rect(surface, self.__color_manager.current_color, self.__rect)
 
     def check_if_hover(self):
         return self.__event_handler.check_if_hover(rect=self.__rect)
@@ -51,6 +58,10 @@ class Button:
     def __update_rect(self):
         self.__rect.x, self.__rect.y = self.__pos.button_x, self.__pos.button_y
         self.__rect.width, self.__rect.height = self.__pos.button_width, self.__pos.button_height
+
+    @property
+    def finished_animation(self):
+        return self.__animation_manager.finished_animation
 
 
 class ButtonEventHandler:
@@ -122,12 +133,16 @@ class ButtonPos:
         self.__button_y = button_y
 
     @property
-    def target_y(self):
+    def correct_target_y(self):
         return self.initial_button_y - self.initial_button_y // 10
 
     @property
+    def wrong_target_y(self):
+        return self.initial_button_y + self.initial_button_y // 20
+
+    @property
     def target_height(self):
-        return self.initial_button_height + self.initial_button_y // 10
+        return self.initial_button_height + self.initial_button_y // 5
 
     def set_button_height(self, button_height):
         self.__button_height = button_height
@@ -152,11 +167,6 @@ class ButtonPos:
         return text_height // self.__TEXT_PADDING_RATIO
 
 
-
-
-
-
-
-
-
+class CorrectAnswerManager:
+    is_correct_answer = False
 

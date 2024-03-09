@@ -14,3 +14,5 @@ class Colors:
     QUIZ_BLUE = (44, 112, 174)
     QUIZ_RED = (212, 84, 109)
     QUIZ_CYAN = (46, 157, 166)
+    QUIZ_CORRECT_GREEN = (107, 174, 68)
+    QUIZ_WRONG_RED = (242, 47, 58)

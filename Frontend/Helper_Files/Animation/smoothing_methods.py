@@ -30,6 +30,12 @@ class EaseOutCubicSmoothing(SmoothingInterface):
         return 1 - pow(1 - seconds_time, 3)
 
 
+class LinearSmoothing(SmoothingInterface):
+    @staticmethod
+    def smooth_in_animation(seconds_time: float):
+        return seconds_time
+
+
 class EaseOutBackSmoothing(SmoothingInterface):
     @staticmethod
     def smooth_in_animation(seconds_time: float):

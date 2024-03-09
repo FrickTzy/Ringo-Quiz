@@ -1,3 +1,4 @@
 from .random_anime_fetcher import RandomAnimeFetcher
 from .anime_character_fetcher import AnimeCharacterFetcher
 from .anime_character_image_fetcher import AnimeCharacterImageFetcher
+from .fetching_error import AnimeFetchingError

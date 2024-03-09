@@ -46,6 +46,13 @@ class AnswerManager:
         return False
 
     @property
+    def get_correct_answer_index(self):
+        for index, value in self.__fetched_choices.items():
+            if not value["correct_answer"]:
+                continue
+            return index
+
+    @property
     def choices(self):
         return self.__current_choices
 
